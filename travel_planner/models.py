@@ -106,10 +106,6 @@ class Itinerary(Model):
         return self
 
 
-class DayEdit(Model):
-    day: Day
-
-
 class PlanChanges(Model):
     days: list[Day] = Field(default_factory=list, max_length=14)
     accommodation: Text | None = None

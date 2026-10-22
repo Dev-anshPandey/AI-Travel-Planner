@@ -29,6 +29,8 @@ class WebSearch:
             )
             response.raise_for_status()
             results = response.json()["results"]
+            if not isinstance(results, list) or not all(isinstance(r, dict) for r in results):
+                raise ValueError("Malformed search results")
             sources = [
                 Source(
                     title=r.get("title") or r["url"],

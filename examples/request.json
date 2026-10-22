@@ -1,0 +1,11 @@
+{
+  "destination": "Paris, France",
+  "start_date": "2027-05-10",
+  "end_date": "2027-05-12",
+  "budget_min": 700,
+  "budget_max": 1200,
+  "currency": "EUR",
+  "travelers": 2,
+  "interests": ["art", "food", "architecture"],
+  "preferences": "Relaxed pace, central accommodation, vegetarian meals"
+}
