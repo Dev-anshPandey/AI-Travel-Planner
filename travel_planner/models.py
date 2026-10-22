@@ -32,8 +32,10 @@ class TravelRequest(Model):
 
     @property
     def dates(self):
-        return [self.start_date + timedelta(days=i)
-                for i in range((self.end_date - self.start_date).days + 1)]
+        return [
+            self.start_date + timedelta(days=i)
+            for i in range((self.end_date - self.start_date).days + 1)
+        ]
 
 
 class Source(Model):
@@ -82,8 +84,16 @@ class Itinerary(Model):
 
     @property
     def total(self):
-        return round(sum(d.meals_cost + d.transport_cost + d.lodging_cost
-                         + sum(a.estimated_cost for a in d.activities) for d in self.days), 2)
+        return round(
+            sum(
+                d.meals_cost
+                + d.transport_cost
+                + d.lodging_cost
+                + sum(a.estimated_cost for a in d.activities)
+                for d in self.days
+            ),
+            2,
+        )
 
     def check_trip(self, request: TravelRequest, sources: list[dict]):
         if [d.date for d in self.days] != request.dates:
