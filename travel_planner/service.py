@@ -45,26 +45,24 @@ class PlanService:
             failed = any(task.error for task in snapshot.tasks)
             paused = any(task.interrupts for task in snapshot.tasks)
             active = plan_id in self.running
-            status = (
-                "completed"
-                if state.get("final")
-                else "running"
-                if active
-                else "failed"
-                if failed
-                else "awaiting_review"
-                if paused
-                else "pending"
-            )
+            if state.get("final"):
+                status = "completed"
+            elif active:
+                status = "running"
+            elif failed:
+                status = "failed"
+            elif paused:
+                status = "awaiting_review"
+            else:
+                status = "pending"
+            stage = snapshot.next[0] if snapshot.next else "pending"
+            if status == "completed":
+                stage = "completed"
             draft = state.get("draft")
             return {
                 "id": plan_id,
                 "status": status,
-                "stage": "completed"
-                if state.get("final")
-                else snapshot.next[0]
-                if snapshot.next
-                else "pending",
+                "stage": stage,
                 "revision": state.get("revision", 0),
                 "request": state["request"],
                 "draft": draft,

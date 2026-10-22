@@ -166,3 +166,22 @@ def test_pending_work_can_resume_after_restart(setup):
         assert client.get(f"/plan/{plan_id}").json()["status"] == "pending"
         assert client.post(f"/plan/{plan_id}/retry").status_code == 202
         assert client.get(f"/plan/{plan_id}").json()["status"] == "awaiting_review"
+
+
+def test_modified_draft_and_final_survive_restarts(setup):
+    settings, agents, _, _ = setup
+    with TestClient(create_app(settings, agents)) as client:
+        plan_id = submit(client)
+        client.post(
+            f"/plan/{plan_id}/review",
+            json={"action": "modify", "revision": 1, "changes": {"accommodation": "Quiet hotel"}},
+        )
+        modified = client.get(f"/plan/{plan_id}").json()
+    with TestClient(create_app(settings, agents)) as client:
+        assert client.get(f"/plan/{plan_id}").json() == modified
+        client.post(f"/plan/{plan_id}/review", json={"action": "approve", "revision": 2})
+        final = client.get(f"/plan/{plan_id}/final").json()
+    with TestClient(create_app(settings, agents)) as client:
+        assert client.get(f"/plan/{plan_id}/final").json() == final
+        assert final["plan"] == modified["draft"]
+        assert len(client.get(f"/plan/{plan_id}").json()["reviews"]) == 2
