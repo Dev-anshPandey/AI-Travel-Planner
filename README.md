@@ -185,7 +185,6 @@ uv run python examples/smoke.py --base-url http://127.0.0.1:8765
 
 Tests replace only the search transport and LLM boundary. The real agents, four tools, StateGraph, SQLite checkpoints, interrupts, service and FastAPI routes execute. Coverage includes all review branches, restart persistence, pending/failed recovery, rejected-revision recovery, stale/concurrent reviews, session isolation, invalid dates/budgets/edits, source validation, provider errors, structured Anthropic request/response shape and bounded planner repair.
 
-Verified locally: **47 tests passed**, Ruff checks passed, and a real Uvicorn/HTTP smoke run completed through revision 3 with mocked providers. No provider keys were supplied, so live Exa results, model access, real itinerary quality and provider latency remain unverified. The normal app always uses real providers; there is no silent mock fallback.
 
 ## Assumptions, tradeoffs and next steps
 
@@ -210,7 +209,7 @@ With more time, I would first add live destination evaluations and evidence chec
 | Errors, validation and meaningful status codes | 202/200/404/409/422; failure and edge-case tests |
 | Setup, architecture, examples, decisions and tradeoffs | This README and `examples/` |
 | Improvements, production concerns and assumptions | Sections above |
-| Repository deliverable | Local staged milestone commits; intentionally not pushed pending owner review |
+| Repository deliverable | Public GitHub repository containing the complete source code |
 
 For an interview walkthrough, read `models.py` → `tools.py` → `agents.py` → `workflow.py` → `service.py` → `api.py`, then `tests/test_workflow.py`. Be ready to explain why an interrupt replays its node, why modified plans need another approval, why revisions and execution guards are separate, and where checkpoint durability stops short of durable job delivery.
 
